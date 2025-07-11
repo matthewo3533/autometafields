@@ -3,7 +3,7 @@
 client_id = "90a9b510827dae9993be63c249d07b18"
 name = "Metafield adjustments"
 handle = "metafield-adjustments"
-application_url = "https://autometafields.onrender.com"
+application_url = "https://autometafields.onrender.com/"
 embedded = true
 
 [build]
@@ -31,7 +31,7 @@ api_version = "2025-07"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_products,write_products,read_metaobjects,write_metaobjects"
+scopes = "read_products,write_products,read_metaobjects,write_metaobjects,read_metaobject_definitions,write_metaobject_definitions"
 
 [auth]
 redirect_urls = ["https://autometafields.onrender.com/auth/callback", "https://autometafields.onrender.com/auth/shopify/callback", "https://autometafields.onrender.com/api/auth/callback"]
