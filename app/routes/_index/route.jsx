@@ -11,11 +11,19 @@ export const loader = async ({ request }) => {
   } catch (err) {
     let errorMsg = "";
     if (err instanceof Response) {
-      errorMsg = `Response status: ${err.status} ${err.statusText}`;
+      let text = "";
+      try {
+        text = await err.text();
+      } catch (e) {
+        text = "Could not read response body";
+      }
+      errorMsg = `Response status: ${err.status} ${err.statusText}. Body: ${text}`;
+      console.error("AUTH ERROR", err.status, err.statusText, text);
     } else {
       errorMsg = err.message || String(err);
+      if (err.stack) errorMsg += `\nStack: ${err.stack}`;
+      console.error("AUTH ERROR", err);
     }
-    console.error("AUTH ERROR", err);
     return { showForm: true, error: errorMsg };
   }
 };
