@@ -245,7 +245,23 @@ export default function App() {
                   <td style={{ padding: 10 }}>{log.productId}</td>
                   <td style={{ padding: 10 }}>{log.status}</td>
                   <td style={{ padding: 10 }}>{log.rule ? `${log.rule.collectionTitle} / ${log.rule.key}` : ""}</td>
-                  <td style={{ padding: 10 }}>{log.message}</td>
+                  <td style={{ padding: 10 }}>{(() => {
+                    try {
+                      const msg = JSON.parse(log.message);
+                      if (msg.error) {
+                        return <div>
+                          <div><b>Error:</b> {msg.error}</div>
+                          <div style={{ fontSize: 12, color: '#718096' }}><b>Input:</b> {JSON.stringify(msg.input)}</div>
+                        </div>;
+                      } else if (msg.input) {
+                        return <div style={{ fontSize: 12, color: '#718096' }}><b>Input:</b> {JSON.stringify(msg.input)}</div>;
+                      }
+                    } catch (e) {
+                      // Not JSON, show as is
+                      return log.message;
+                    }
+                    return log.message;
+                  })()}</td>
                 </tr>
               ))}
             </tbody>
