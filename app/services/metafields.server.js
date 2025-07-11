@@ -30,11 +30,11 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
     // Assign metafield
     try {
       const metafieldInput = {
-        ownerId: product.id,
+        ownerId: product.id, // must be a GID
         namespace: rule.namespace,
         key: rule.key,
         type: rule.type,
-        value: rule.value,
+        value: String(rule.value), // force value to string
       };
       console.log("Setting metafield:", metafieldInput);
       await admin.graphql(`
@@ -66,7 +66,7 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
             namespace: rule.namespace,
             key: rule.key,
             type: rule.type,
-            value: rule.value,
+            value: String(rule.value),
           }, error: err.message || String(err) }),
         },
       });
