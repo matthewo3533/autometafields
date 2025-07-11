@@ -9,21 +9,4 @@ export const loader = async () => {
     include: { rule: true },
   });
   return json(logs);
-};
-
-export const checkAuth = async ({ request }) => {
-  try {
-    await authenticate.admin(request);
-    return json({ authCheck: true });
-  } catch (err) {
-    return json({ authCheck: false });
-  }
-};
-
-export const GET = async ({ request }) => {
-  const url = new URL(request.url);
-  if (url.pathname === "/api/check-auth") {
-    return checkAuth({ request });
-  }
-  return loader({ request });
 }; 
