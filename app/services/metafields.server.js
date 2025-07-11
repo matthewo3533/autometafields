@@ -8,7 +8,7 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
   if (!rules.length) return;
 
   // Get product details (including collections)
-  const admin = await shopify.authenticate.adminFromSession(session);
+  const { admin } = await shopify.authenticate.admin(session);
   const productRes = await admin.graphql(`{
     product(id: \"gid://shopify/Product/${productId}\") {
       id
@@ -70,7 +70,7 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
 export async function applyMetafieldRulesToAllProducts(shop, session) {
   const rules = await prisma.metafieldRule.findMany();
   if (!rules.length) return;
-  const admin = await shopify.authenticate.adminFromSession(session);
+  const { admin } = await shopify.authenticate.admin(session);
   // Get all products (first 100 for now)
   const productsRes = await admin.graphql(`{
     products(first: 100) { nodes { id title collections(first: 10) { nodes { title } } } }
@@ -120,4 +120,4 @@ export async function applyMetafieldRulesToAllProducts(shop, session) {
       }
     }
   }
-} 
+}
