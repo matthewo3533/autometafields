@@ -3,7 +3,7 @@
 client_id = "90a9b510827dae9993be63c249d07b18"
 name = "Metafield adjustments"
 handle = "metafield-adjustments"
-application_url = "https://vote-downloaded-summer-governor.trycloudflare.com"
+application_url = "https://autometafields.onrender.com"
 embedded = true
 
 [build]
@@ -34,7 +34,7 @@ api_version = "2025-07"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://vote-downloaded-summer-governor.trycloudflare.com/auth/callback", "https://vote-downloaded-summer-governor.trycloudflare.com/auth/shopify/callback", "https://vote-downloaded-summer-governor.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://autometafields.onrender.com/auth/callback", "https://autometafields.onrender.com/auth/shopify/callback", "https://autometafields.onrender.com/api/auth/callback"]
 
 [pos]
 embedded = false
