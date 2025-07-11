@@ -1,6 +1,5 @@
 import { json } from "@remix-run/node";
 import prisma from "../db.server";
-import { authenticate } from "../shopify.server";
 
 export const loader = async () => {
   const logs = await prisma.metafieldLog.findMany({
