@@ -29,13 +29,14 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
 
     // Assign metafield
     try {
-      console.log("Setting metafield:", {
+      const metafieldInput = {
         ownerId: product.id,
         namespace: rule.namespace,
         key: rule.key,
         type: rule.type,
         value: rule.value,
-      });
+      };
+      console.log("Setting metafield:", metafieldInput);
       await admin.graphql(`
         mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
           metafieldsSet(metafields: $metafields) {
@@ -44,20 +45,14 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
           }
         }
       `, {
-        metafields: [{
-          ownerId: product.id,
-          namespace: rule.namespace,
-          key: rule.key,
-          type: rule.type,
-          value: rule.value,
-        }],
+        metafields: [metafieldInput],
       });
       await prisma.metafieldLog.create({
         data: {
           ruleId: rule.id,
           productId: productId.toString(),
           status: "success",
-          message: null,
+          message: JSON.stringify({ input: metafieldInput }),
         },
       });
     } catch (err) {
@@ -66,7 +61,13 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
           ruleId: rule.id,
           productId: productId.toString(),
           status: "failure",
-          message: err.message || String(err),
+          message: JSON.stringify({ input: {
+            ownerId: product.id,
+            namespace: rule.namespace,
+            key: rule.key,
+            type: rule.type,
+            value: rule.value,
+          }, error: err.message || String(err) }),
         },
       });
     }
