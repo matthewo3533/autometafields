@@ -1,5 +1,5 @@
 import { redirect } from "@remix-run/node";
-import { Form, useLoaderData, useActionData } from "@remix-run/react";
+import { Form, useLoaderData, useActionData, useFetcher } from "@remix-run/react";
 import styles from "./styles.module.css";
 import { useEffect, useState } from "react";
 
@@ -43,11 +43,16 @@ export default function App() {
     ownerResource: "product",
   });
   const [editing, setEditing] = useState(false);
+  const [authCheckResult, setAuthCheckResult] = useState(null);
+  const fetcher = useFetcher();
 
   useEffect(() => {
     fetch("/api/rules").then(r => r.json()).then(setRules);
     fetch("/api/logs").then(r => r.json()).then(setLogs);
-  }, []);
+    if (fetcher.data && fetcher.data.authCheck !== undefined) {
+      setAuthCheckResult(fetcher.data.authCheck);
+    }
+  }, [fetcher.data]);
 
   const handleFormChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -288,6 +293,18 @@ export default function App() {
             Metafield rules are being applied to all products.
           </div>
         )}
+        <div style={{ marginTop: 24 }}>
+          <fetcher.Form method="get" action="/api/check-auth">
+            <button type="submit" style={{
+              background: '#3182ce', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '0 1px 4px rgba(60,72,88,0.08)', marginRight: 12
+            }}>Check Shopify Auth</button>
+            {authCheckResult !== null && (
+              <span style={{ marginLeft: 12, fontWeight: 500, color: authCheckResult ? '#38a169' : '#e53e3e' }}>
+                {authCheckResult ? 'Authenticated!' : 'Not authenticated!'}
+              </span>
+            )}
+          </fetcher.Form>
+        </div>
       </div>
     </div>
   );
