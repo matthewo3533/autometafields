@@ -27,6 +27,21 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
     );
     if (!inCollection) continue;
 
+    // Check if admin client is valid (has accessToken or shop)
+    if (!admin || !admin.graphql) {
+      const authError = 'Shopify admin client is not authenticated or missing.';
+      console.error(authError);
+      await prisma.metafieldLog.create({
+        data: {
+          ruleId: rule.id,
+          productId: productId.toString(),
+          status: "failure",
+          message: JSON.stringify({ error: authError }),
+        },
+      });
+      continue;
+    }
+
     // Assign metafield
     try {
       const metafieldInput = {
