@@ -29,6 +29,13 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
 
     // Assign metafield
     try {
+      console.log("Setting metafield:", {
+        ownerId: product.id,
+        namespace: rule.namespace,
+        key: rule.key,
+        type: rule.type,
+        value: rule.value,
+      });
       await admin.graphql(`
         mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
           metafieldsSet(metafields: $metafields) {
