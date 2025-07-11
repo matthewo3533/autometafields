@@ -67,10 +67,9 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
 }
 
 // Apply all rules to all products in the store
-export async function applyMetafieldRulesToAllProducts(shop, session) {
+export async function applyMetafieldRulesToAllProducts(admin, shop, session) {
   const rules = await prisma.metafieldRule.findMany();
   if (!rules.length) return;
-  const { admin } = await shopify.authenticate.admin(session);
   // Get all products (first 100 for now)
   const productsRes = await admin.graphql(`{
     products(first: 100) { nodes { id title collections(first: 10) { nodes { title } } } }

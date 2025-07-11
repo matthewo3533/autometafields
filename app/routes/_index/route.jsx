@@ -23,8 +23,8 @@ export const loader = async ({ request }) => {
 export const action = async ({ request }) => {
   const { authenticate } = await import("../../shopify.server");
   const { applyMetafieldRulesToAllProducts } = await import("../../services/metafields.server");
-  const { shop, session } = await authenticate.admin(request);
-  await applyMetafieldRulesToAllProducts(shop, session);
+  const { admin, shop, session } = await authenticate.admin(request);
+  await applyMetafieldRulesToAllProducts(admin, shop, session);
   return { triggered: true };
 };
 
