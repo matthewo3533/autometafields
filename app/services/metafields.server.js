@@ -71,18 +71,31 @@ export async function applyMetafieldRulesToProduct(productId, shop, session) {
         },
       });
     } catch (err) {
+      let errorDetails = { input: {
+        ownerId: product.id,
+        namespace: rule.namespace,
+        key: rule.key,
+        type: rule.type,
+        value: String(rule.value),
+      } };
+      if (err && err.response) {
+        errorDetails.status = err.response.status;
+        try {
+          errorDetails.body = await err.response.text();
+        } catch (e) {
+          errorDetails.body = 'Could not read response body';
+        }
+      } else {
+        errorDetails.error = err.message || String(err);
+        if (err.stack) errorDetails.stack = err.stack;
+      }
+      console.error('Metafield assignment error:', errorDetails);
       await prisma.metafieldLog.create({
         data: {
           ruleId: rule.id,
           productId: productId.toString(),
           status: "failure",
-          message: JSON.stringify({ input: {
-            ownerId: product.id,
-            namespace: rule.namespace,
-            key: rule.key,
-            type: rule.type,
-            value: String(rule.value),
-          }, error: err.message || String(err) }),
+          message: JSON.stringify(errorDetails),
         },
       });
     }
@@ -131,12 +144,31 @@ export async function applyMetafieldRulesToAllProducts(admin, shop, session) {
           },
         });
       } catch (err) {
+        let errorDetails = { input: {
+          ownerId: product.id,
+          namespace: rule.namespace,
+          key: rule.key,
+          type: rule.type,
+          value: String(rule.value),
+        } };
+        if (err && err.response) {
+          errorDetails.status = err.response.status;
+          try {
+            errorDetails.body = await err.response.text();
+          } catch (e) {
+            errorDetails.body = 'Could not read response body';
+          }
+        } else {
+          errorDetails.error = err.message || String(err);
+          if (err.stack) errorDetails.stack = err.stack;
+        }
+        console.error('Metafield assignment error:', errorDetails);
         await prisma.metafieldLog.create({
           data: {
             ruleId: rule.id,
             productId: product.id.split("/").pop(),
             status: "failure",
-            message: err.message || String(err),
+            message: JSON.stringify(errorDetails),
           },
         });
       }
