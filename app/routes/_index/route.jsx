@@ -4,15 +4,23 @@ import styles from "./styles.module.css";
 import { useEffect, useState } from "react";
 
 export const loader = async ({ request }) => {
+  // Force HTTPS redirect at the very beginning
+  const url = new URL(request.url);
+  if (url.protocol === 'http:' && process.env.NODE_ENV === 'production') {
+    url.protocol = 'https:';
+    console.log("ROUTE: Redirecting HTTP to HTTPS at response level:", url.toString());
+    return redirect(url.toString());
+  }
+  
   const { authenticate } = await import("../../shopify.server");
   
   // Force HTTPS for authentication
   let authRequest = request;
-  const url = new URL(request.url);
-  if (url.protocol === 'http:') {
-    url.protocol = 'https:';
-    console.log("ROUTE: Forcing HTTPS for auth request:", url.toString());
-    authRequest = new Request(url.toString(), {
+  const authUrl = new URL(request.url);
+  if (authUrl.protocol === 'http:') {
+    authUrl.protocol = 'https:';
+    console.log("ROUTE: Forcing HTTPS for auth request:", authUrl.toString());
+    authRequest = new Request(authUrl.toString(), {
       method: request.method,
       headers: request.headers,
       body: request.body,
