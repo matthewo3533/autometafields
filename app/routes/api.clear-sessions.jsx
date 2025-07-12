@@ -22,14 +22,4 @@ export const action = async ({ request }) => {
     console.error("Error clearing sessions:", error);
     return json({ success: false, error: error.message });
   }
-};
-
-export const loader = async () => {
-  try {
-    // Count sessions
-    const count = await prisma.session.count();
-    return json({ sessionCount: count });
-  } catch (error) {
-    return json({ error: error.message }, { status: 500 });
-  }
 }; 
