@@ -6,6 +6,19 @@ import { useEffect, useState } from "react";
 export const loader = async ({ request }) => {
   const { authenticate } = await import("../../shopify.server");
   
+  // Force HTTPS for authentication
+  let authRequest = request;
+  const url = new URL(request.url);
+  if (url.protocol === 'http:') {
+    url.protocol = 'https:';
+    console.log("ROUTE: Forcing HTTPS for auth request:", url.toString());
+    authRequest = new Request(url.toString(), {
+      method: request.method,
+      headers: request.headers,
+      body: request.body,
+    });
+  }
+  
   // Log configuration details before auth attempt
   console.log("=== AUTH CONFIGURATION DEBUG ===");
   console.log("SHOPIFY_API_KEY:", process.env.SHOPIFY_API_KEY ? `${process.env.SHOPIFY_API_KEY.substring(0, 8)}...` : "NOT SET");
@@ -17,11 +30,13 @@ export const loader = async ({ request }) => {
   console.log("Request Protocol:", new URL(request.url).protocol);
   console.log("Is HTTPS:", new URL(request.url).protocol === 'https:');
   console.log("X-Forwarded-Proto:", request.headers.get('x-forwarded-proto'));
+  console.log("Auth Request URL:", authRequest.url);
+  console.log("Auth Request Protocol:", new URL(authRequest.url).protocol);
   console.log("Request headers:", Object.fromEntries(request.headers.entries()));
   console.log("=== END AUTH CONFIGURATION DEBUG ===");
   
   try {
-    await authenticate.admin(request);
+    await authenticate.admin(authRequest);
     return { showForm: false };
   } catch (err) {
     let errorMsg = "";
