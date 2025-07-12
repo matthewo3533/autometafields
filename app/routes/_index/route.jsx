@@ -5,6 +5,18 @@ import { useEffect, useState } from "react";
 
 export const loader = async ({ request }) => {
   const { authenticate } = await import("../../shopify.server");
+  
+  // Log configuration details before auth attempt
+  console.log("=== AUTH CONFIGURATION DEBUG ===");
+  console.log("SHOPIFY_API_KEY:", process.env.SHOPIFY_API_KEY ? `${process.env.SHOPIFY_API_KEY.substring(0, 8)}...` : "NOT SET");
+  console.log("SHOPIFY_API_SECRET:", process.env.SHOPIFY_API_SECRET ? `${process.env.SHOPIFY_API_SECRET.substring(0, 8)}...` : "NOT SET");
+  console.log("SHOPIFY_APP_URL:", process.env.SHOPIFY_APP_URL || "NOT SET");
+  console.log("SCOPES:", process.env.SCOPES || "NOT SET");
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+  console.log("Request URL:", request.url);
+  console.log("Request headers:", Object.fromEntries(request.headers.entries()));
+  console.log("=== END AUTH CONFIGURATION DEBUG ===");
+  
   try {
     await authenticate.admin(request);
     return { showForm: false };
