@@ -72,8 +72,8 @@ export default function App() {
   const clearSessionsFetcher = useFetcher();
 
   useEffect(() => {
-    fetch("/api/rules").then(r => r.json()).then(setRules);
-    fetch("/api/logs").then(r => r.json()).then(setLogs);
+    fetch("https://autometafields.onrender.com/api/rules").then(r => r.json()).then(setRules);
+    fetch("https://autometafields.onrender.com/api/logs").then(r => r.json()).then(setLogs);
     if (fetcher.data && fetcher.data.authCheck !== undefined) {
       setAuthCheckResult(fetcher.data.authCheck);
     }
@@ -90,14 +90,14 @@ export default function App() {
     e.preventDefault();
     const method = editing ? "update" : "create";
     const body = editing ? { _method: method, id: form.id, rule: form } : { _method: method, rule: form };
-    await fetch("/api/rules", {
+    await fetch("https://autometafields.onrender.com/api/rules", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
     setForm({ id: null, collectionTitle: "", namespace: "custom", key: "", type: "single_line_text_field", value: "", ownerResource: "product" });
     setEditing(false);
-    fetch("/api/rules").then(r => r.json()).then(setRules);
+    fetch("https://autometafields.onrender.com/api/rules").then(r => r.json()).then(setRules);
   };
 
   const handleEdit = rule => {
@@ -106,12 +106,12 @@ export default function App() {
   };
 
   const handleDelete = async id => {
-    await fetch("/api/rules", {
+    await fetch("https://autometafields.onrender.com/api/rules", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ _method: "delete", id }),
     });
-    fetch("/api/rules").then(r => r.json()).then(setRules);
+    fetch("https://autometafields.onrender.com/api/rules").then(r => r.json()).then(setRules);
   };
 
   return (
@@ -322,7 +322,7 @@ export default function App() {
           </div>
         )}
         <div style={{ marginTop: 24 }}>
-          <fetcher.Form method="get" action="/api/check-auth">
+          <fetcher.Form method="get" action="https://autometafields.onrender.com/api/check-auth">
             <button type="submit" style={{
               background: '#3182ce', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '0 1px 4px rgba(60,72,88,0.08)', marginRight: 12
             }}>Check Shopify Auth</button>
@@ -332,7 +332,7 @@ export default function App() {
               </span>
             )}
           </fetcher.Form>
-          <clearSessionsFetcher.Form method="post" action="/api/clear-sessions" style={{ marginTop: 12 }}>
+          <clearSessionsFetcher.Form method="post" action="https://autometafields.onrender.com/api/clear-sessions" style={{ marginTop: 12 }}>
             <button type="submit" style={{
               background: clearSessionsFetcher.state === 'submitting' ? '#a0aec0' : '#e53e3e', 
               color: '#fff', 
