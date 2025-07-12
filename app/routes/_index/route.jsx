@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 export const loader = async ({ request }) => {
   // Handle HTTPS redirect without causing loops
   const url = new URL(request.url);
-  const isHttps = url.protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';
+  const isHttps = url.protocol === 'https:';
   const isProduction = process.env.NODE_ENV === 'production';
   
   // Only redirect if we're in production, not already HTTPS, and not in a redirect loop
-  if (isProduction && !isHttps && url.protocol === 'http:') {
+  if (isProduction && url.protocol === 'http:') {
     const redirectCount = parseInt(request.headers.get('x-redirect-count') || '0');
     if (redirectCount < 3) { // Prevent infinite loops
       url.protocol = 'https:';

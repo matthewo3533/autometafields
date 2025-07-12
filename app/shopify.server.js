@@ -21,9 +21,9 @@ console.log("=== END SHOPIFY APP CONFIGURATION ===");
 // Custom request handler to force HTTPS
 const forceHttps = (request) => {
   const url = new URL(request.url);
-  const isHttps = url.protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';
+  const isHttps = url.protocol === 'https:';
   
-  if (!isHttps && url.protocol === 'http:') {
+  if (url.protocol === 'http:') {
     url.protocol = 'https:';
     console.log("SHOPIFY CONFIG: Forcing HTTPS redirect:", url.toString());
     return Response.redirect(url.toString(), 301);
