@@ -29,7 +29,6 @@ const shopify = shopifyApp({
   },
   // Force HTTPS for all requests
   isEmbeddedApp: true,
-  forceRedirect: true,
   ...(process.env.SHOP_CUSTOM_DOMAIN
     ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
     : {}),

@@ -4,14 +4,6 @@ import styles from "./styles.module.css";
 import { useEffect, useState } from "react";
 
 export const loader = async ({ request }) => {
-  // Force HTTPS redirect if request is HTTP
-  const url = new URL(request.url);
-  if (url.protocol === 'http:' && process.env.NODE_ENV === 'production') {
-    url.protocol = 'https:';
-    console.log("Redirecting HTTP to HTTPS:", url.toString());
-    return redirect(url.toString());
-  }
-  
   const { authenticate } = await import("../../shopify.server");
   
   // Log configuration details before auth attempt
@@ -22,7 +14,7 @@ export const loader = async ({ request }) => {
   console.log("SCOPES:", process.env.SCOPES || "NOT SET");
   console.log("NODE_ENV:", process.env.NODE_ENV);
   console.log("Request URL:", request.url);
-  console.log("Request Protocol:", url.protocol);
+  console.log("Request Protocol:", new URL(request.url).protocol);
   console.log("Request headers:", Object.fromEntries(request.headers.entries()));
   console.log("=== END AUTH CONFIGURATION DEBUG ===");
   
