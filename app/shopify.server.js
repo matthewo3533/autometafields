@@ -7,6 +7,13 @@ import {
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import prisma from "./db.server";
 
+// Log the app configuration
+console.log("=== SHOPIFY APP CONFIGURATION ===");
+console.log("API Key:", process.env.SHOPIFY_API_KEY ? `${process.env.SHOPIFY_API_KEY.substring(0, 8)}...` : "NOT SET");
+console.log("App URL:", process.env.SHOPIFY_APP_URL || "NOT SET");
+console.log("Scopes:", process.env.SCOPES || "NOT SET");
+console.log("=== END SHOPIFY APP CONFIGURATION ===");
+
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
@@ -20,6 +27,9 @@ const shopify = shopifyApp({
     unstable_newEmbeddedAuthStrategy: true,
     removeRest: true,
   },
+  // Force HTTPS for all requests
+  isEmbeddedApp: true,
+  forceRedirect: true,
   ...(process.env.SHOP_CUSTOM_DOMAIN
     ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
     : {}),
