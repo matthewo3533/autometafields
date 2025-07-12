@@ -4,28 +4,7 @@ import styles from "./styles.module.css";
 import { useEffect, useState } from "react";
 
 export const loader = async ({ request }) => {
-  // Force HTTPS redirect at the very beginning
-  const url = new URL(request.url);
-  if (url.protocol === 'http:' && process.env.NODE_ENV === 'production') {
-    url.protocol = 'https:';
-    console.log("ROUTE: Redirecting HTTP to HTTPS at response level:", url.toString());
-    return redirect(url.toString());
-  }
-  
   const { authenticate } = await import("../../shopify.server");
-  
-  // Force HTTPS for authentication
-  let authRequest = request;
-  const authUrl = new URL(request.url);
-  if (authUrl.protocol === 'http:') {
-    authUrl.protocol = 'https:';
-    console.log("ROUTE: Forcing HTTPS for auth request:", authUrl.toString());
-    authRequest = new Request(authUrl.toString(), {
-      method: request.method,
-      headers: request.headers,
-      body: request.body,
-    });
-  }
   
   // Log configuration details before auth attempt
   console.log("=== AUTH CONFIGURATION DEBUG ===");
@@ -38,13 +17,11 @@ export const loader = async ({ request }) => {
   console.log("Request Protocol:", new URL(request.url).protocol);
   console.log("Is HTTPS:", new URL(request.url).protocol === 'https:');
   console.log("X-Forwarded-Proto:", request.headers.get('x-forwarded-proto'));
-  console.log("Auth Request URL:", authRequest.url);
-  console.log("Auth Request Protocol:", new URL(authRequest.url).protocol);
   console.log("Request headers:", Object.fromEntries(request.headers.entries()));
   console.log("=== END AUTH CONFIGURATION DEBUG ===");
   
   try {
-    await authenticate.admin(authRequest);
+    await authenticate.admin(request);
     return { showForm: false };
   } catch (err) {
     let errorMsg = "";

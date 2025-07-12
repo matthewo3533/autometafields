@@ -18,23 +18,6 @@ console.log("Forced HTTPS App URL:", appUrl);
 console.log("Scopes:", process.env.SCOPES || "NOT SET");
 console.log("=== END SHOPIFY APP CONFIGURATION ===");
 
-// Force HTTPS for authentication requests
-const forceHttpsForAuth = (request) => {
-  const url = new URL(request.url);
-  if (url.protocol === 'http:') {
-    url.protocol = 'https:';
-    console.log("SHOPIFY AUTH: Forcing HTTPS for auth request:", url.toString());
-    // Create a new request with HTTPS URL
-    const newRequest = new Request(url.toString(), {
-      method: request.method,
-      headers: request.headers,
-      body: request.body,
-    });
-    return newRequest;
-  }
-  return request;
-};
-
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
@@ -50,12 +33,6 @@ const shopify = shopifyApp({
   },
   // Force HTTPS for all requests
   isEmbeddedApp: true,
-  // Custom request handler to force HTTPS for auth
-  hooks: {
-    beforeAuth: (request) => {
-      return forceHttpsForAuth(request);
-    },
-  },
   ...(process.env.SHOP_CUSTOM_DOMAIN
     ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
     : {}),
