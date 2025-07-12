@@ -52,7 +52,9 @@ export default function App() {
   });
   const [editing, setEditing] = useState(false);
   const [authCheckResult, setAuthCheckResult] = useState(null);
+  const [clearSessionsResult, setClearSessionsResult] = useState(null);
   const fetcher = useFetcher();
+  const clearSessionsFetcher = useFetcher();
 
   useEffect(() => {
     fetch("/api/rules").then(r => r.json()).then(setRules);
@@ -60,7 +62,10 @@ export default function App() {
     if (fetcher.data && fetcher.data.authCheck !== undefined) {
       setAuthCheckResult(fetcher.data.authCheck);
     }
-  }, [fetcher.data]);
+    if (clearSessionsFetcher.data && clearSessionsFetcher.data.success !== undefined) {
+      setClearSessionsResult(clearSessionsFetcher.data);
+    }
+  }, [fetcher.data, clearSessionsFetcher.data]);
 
   const handleFormChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -312,11 +317,30 @@ export default function App() {
               </span>
             )}
           </fetcher.Form>
-          <fetcher.Form method="post" action="/api/clear-sessions" style={{ marginTop: 12 }}>
+          <clearSessionsFetcher.Form method="post" action="/api/clear-sessions" style={{ marginTop: 12 }}>
             <button type="submit" style={{
-              background: '#e53e3e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '0 1px 4px rgba(60,72,88,0.08)', marginRight: 12
-            }}>Clear All Sessions (Fix 410 Error)</button>
-          </fetcher.Form>
+              background: clearSessionsFetcher.state === 'submitting' ? '#a0aec0' : '#e53e3e', 
+              color: '#fff', 
+              border: 'none', 
+              borderRadius: 8, 
+              padding: '8px 20px', 
+              fontWeight: 600, 
+              fontSize: 15, 
+              cursor: clearSessionsFetcher.state === 'submitting' ? 'not-allowed' : 'pointer', 
+              boxShadow: '0 1px 4px rgba(60,72,88,0.08)', 
+              marginRight: 12
+            }}>
+              {clearSessionsFetcher.state === 'submitting' ? 'Clearing...' : 'Clear All Sessions (Fix 410 Error)'}
+            </button>
+          </clearSessionsFetcher.Form>
+          {clearSessionsResult && (
+            <div style={{ marginTop: 8, fontWeight: 500, color: clearSessionsResult.success ? '#38a169' : '#e53e3e' }}>
+              {clearSessionsResult.success 
+                ? `Successfully cleared ${clearSessionsResult.clearedCount} sessions!` 
+                : `Error: ${clearSessionsResult.error}`
+              }
+            </div>
+          )}
         </div>
       </div>
     </div>
