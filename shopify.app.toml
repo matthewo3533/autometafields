@@ -3,7 +3,7 @@
 client_id = "90a9b510827dae9993be63c249d07b18"
 name = "Metafield adjustments"
 handle = "metafield-adjustments"
-application_url = "https://autometafields.onrender.com/"
+application_url = "https://autometafields.onrender.com"
 embedded = true
 
 [build]
