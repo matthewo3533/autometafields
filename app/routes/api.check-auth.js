@@ -3,6 +3,11 @@ import { authenticate } from "../shopify.server";
 import { redirect } from "@remix-run/node";
 
 export const loader = async ({ request }) => {
+  console.log("=== CHECK-AUTH ROUTE HIT ===");
+  console.log("Request URL:", request.url);
+  console.log("Request method:", request.method);
+  console.log("Request headers:", Object.fromEntries(request.headers.entries()));
+  
   // Log configuration details before auth attempt
   console.log("=== CHECK-AUTH CONFIGURATION DEBUG ===");
   console.log("SHOPIFY_API_KEY:", process.env.SHOPIFY_API_KEY ? `${process.env.SHOPIFY_API_KEY.substring(0, 8)}...` : "NOT SET");
@@ -18,9 +23,10 @@ export const loader = async ({ request }) => {
   
   try {
     await authenticate.admin(request);
+    console.log("=== CHECK-AUTH SUCCESS ===");
     return json({ authCheck: true });
   } catch (err) {
-    console.error("CHECK-AUTH ERROR:", err);
-    return json({ authCheck: false });
+    console.error("=== CHECK-AUTH ERROR ===", err);
+    return json({ authCheck: false, error: err.message });
   }
 }; 

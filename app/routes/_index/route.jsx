@@ -332,6 +332,11 @@ export default function App() {
               </span>
             )}
           </fetcher.Form>
+          <fetcher.Form method="get" action="https://autometafields.onrender.com/api/test" style={{ marginTop: 12 }}>
+            <button type="submit" style={{
+              background: '#805ad5', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '0 1px 4px rgba(60,72,88,0.08)', marginRight: 12
+            }}>Test API Route</button>
+          </fetcher.Form>
           <clearSessionsFetcher.Form method="post" action="https://autometafields.onrender.com/api/clear-sessions" style={{ marginTop: 12 }}>
             <button type="submit" style={{
               background: clearSessionsFetcher.state === 'submitting' ? '#a0aec0' : '#e53e3e', 
