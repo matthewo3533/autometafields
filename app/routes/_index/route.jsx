@@ -312,6 +312,11 @@ export default function App() {
               </span>
             )}
           </fetcher.Form>
+          <fetcher.Form method="post" action="/api/clear-sessions" style={{ marginTop: 12 }}>
+            <button type="submit" style={{
+              background: '#e53e3e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '0 1px 4px rgba(60,72,88,0.08)', marginRight: 12
+            }}>Clear All Sessions (Fix 410 Error)</button>
+          </fetcher.Form>
         </div>
       </div>
     </div>
